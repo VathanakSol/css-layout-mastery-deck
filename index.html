@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CSS Layout Mastery — From Flexbox to Grid</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--orange:#FF7A3D;--teal:#2BB5B8;--yellow:#FFE08A;--navy:#0F172A;--slate:#475569;--gray:#64748B;--border:#E2E8F0;--soft:#F8FAFC}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,sans-serif;background:#EEF2F7;color:var(--navy);line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;border:0;cursor:pointer}
+.topbar{position:fixed;z-index:30;inset:0 0 auto;height:58px;display:flex;align-items:center;gap:12px;padding:11px 18px;background:rgba(15,23,42,.96);color:#fff;backdrop-filter:blur(12px)}
+.brand{margin-right:auto;font-size:13px;font-weight:800;letter-spacing:.02em}
+.tool-btn{border-radius:999px;width:34px;height:34px;background:var(--teal);color:#052B2E;font-size:18px;font-weight:900;display:grid;place-items:center}
+.tool-btn.wide{width:auto;padding:0 14px;background:var(--orange);color:#3A1200;font-size:12px;font-weight:800}
+.counter{min-width:58px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px}
+.progress{position:fixed;z-index:31;left:0;top:58px;height:4px;width:16.66%;background:linear-gradient(90deg,var(--orange),var(--yellow));transition:width .28s ease}
+.stage{height:100vh;padding:78px 24px 24px;display:grid;place-items:center}
+.slide{display:none;width:min(1280px,100%);aspect-ratio:16/9;max-height:calc(100vh - 104px);padding:clamp(28px,4vw,62px);background:#fff;border:1px solid var(--border);border-radius:28px;box-shadow:0 24px 70px rgba(15,23,42,.12);position:relative;overflow:hidden}
+.slide.active{display:flex;flex-direction:column;animation:enter .35s ease both;overflow:hidden}
+.header{flex:0 0 auto;margin-bottom:clamp(14px,2vh,26px)}
+.slide-body{flex:1 1 auto;min-height:0;overflow:hidden}
+@keyframes enter{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+.page-no{position:absolute;right:28px;bottom:22px;font:600 12px 'JetBrains Mono',monospace;color:var(--gray)}
+.kicker{display:inline-flex;padding:7px 12px;border-radius:999px;background:#FFF0E8;color:#B74B18;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+h1,h2{line-height:1.03;letter-spacing:-.045em}
+h1{font-size:clamp(48px,7vw,94px)}
+h2{font-size:clamp(34px,4.7vw,62px)}
+p{color:var(--slate);font-size:clamp(14px,1.55vw,20px)}
+.accent{color:var(--orange)}.accent2{color:var(--teal)}
+.title-grid{height:100%;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:clamp(24px,5vw,70px);align-items:center}
+.copy{position:relative;z-index:2}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.chip{padding:8px 12px;border-radius:999px;font-size:12px;font-weight:750}.chip.teal{background:#E6FBFB;color:#12666A}.chip.yellow{background:#FFF4CC;color:#7A5800}.chip.navy{background:#E8EDF7;color:#243B63}
+.rule{width:112px;height:5px;border-radius:99px;background:linear-gradient(90deg,var(--orange),var(--teal));margin:22px 0}
+.hero-art{position:relative;min-height:280px;display:grid;place-items:center}.hero-art svg{width:100%;max-width:520px;filter:drop-shadow(0 20px 28px rgba(15,23,42,.14))}.shape{position:absolute;border-radius:999px;mix-blend-mode:multiply}.shape.one{width:120px;height:120px;background:var(--teal);left:0;top:10px}.shape.two{width:90px;height:90px;background:var(--yellow);right:20px;top:0}.shape.three{width:150px;height:150px;background:var(--orange);right:-20px;bottom:-20px;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:clamp(18px,3vw,34px)}.header p{max-width:690px;margin-top:10px}
+.cols-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,34px)}.cols-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.slide-body{height:calc(100% - 132px)}
+.card{padding:22px;border:1px solid var(--border);border-radius:22px;background:var(--soft)}.card h3{font-size:clamp(20px,2.2vw,30px);margin-bottom:8px}.card ul{margin:12px 0 0 18px;color:var(--slate);font-size:clamp(13px,1.35vw,18px)}.card li{margin:7px 0}
+.timeline{height:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:end;padding-bottom:28px;position:relative}.era{padding:20px;border-radius:20px;background:#fff;border:1px solid var(--border);min-height:210px}.era:before{content:"";display:block;width:14px;height:14px;border-radius:50%;background:var(--orange);margin-bottom:14px}.era:nth-child(2):before{background:var(--teal)}.era:nth-child(3):before{background:#7C3AED}.era:nth-child(4):before{background:#0EA5E9}.timeline:after{content:"";position:absolute;left:0;right:0;bottom:18px;height:4px;border-radius:99px;background:linear-gradient(90deg,#CBD5E1,var(--orange))}
+code,pre{font-family:'JetBrains Mono',monospace}pre{white-space:pre-wrap;word-break:break-word;background:#0F172A;color:#E2E8F0;border-radius:18px;padding:18px;font-size:clamp(11px,1.15vw,15px);line-height:1.65;overflow:auto}.token-selector{color:#FFD166}.token-prop{color:#7DD3FC}.token-value{color:#86EFAC}.demo{min-height:190px;padding:14px;border:2px dashed #B7C3D4;border-radius:18px;background:#F8FAFC;display:flex;gap:10px;align-items:center;justify-content:center}.demo.grid-demo{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)}.item{padding:14px 18px;border-radius:12px;background:var(--teal);color:#063B3E;font-weight:800;box-shadow:0 6px 14px rgba(43,181,184,.18)}.item:nth-child(even){background:var(--yellow)}.item.span{grid-column:span 2;background:var(--orange);color:#4A1905}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}.axis{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-radius:14px;background:#E6F7F7;color:#116468;font-weight:800;margin-bottom:14px}.callout{padding:18px 20px;border-left:6px solid var(--orange);border-radius:0 18px 18px 0;background:#FFF7F2;color:#6E3518;font-weight:700}
+.matrix{height:100%;display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(6,1fr);gap:8px}.zone{border-radius:14px;background:#E2E8F0;padding:12px;font-size:clamp(10px,1vw,14px);font-weight:800;color:#334155}.zone.a{grid-column:1/span 12;background:#DBEAFE}.zone.b{grid-column:1/span 4;background:#CFFAFE}.zone.c{grid-column:5/span 4;background:#FEF3C7}.zone.d{grid-column:9/span 4;background:#FFE4D6}.zone.e{grid-column:1/span 12;background:#DCFCE7}.strategy{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.debug-grid{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:20px;height:100%}.checklist{display:grid;gap:10px}.check{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--border);border-radius:16px;background:#fff}.tick{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#063B3E;font-weight:900;flex:0 0 auto}
+.takeaway{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:clamp(20px,4vw,56px);align-items:center;height:100%}.big-list{counter-reset:n;display:grid;gap:12px;margin-top:22px}.big-list div{counter-increment:n;display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;padding:14px;border-radius:16px;background:var(--soft)}.big-list div:before{content:counter(n);width:34px;height:34px;display:grid;place-items:center;border-radius:12px;background:var(--orange);color:white;font-weight:900}.final-card{padding:26px;border-radius:24px;background:linear-gradient(145deg,#0F172A,#243B63);color:#fff}.final-card h3{font-size:34px;margin-bottom:12px}.final-card p{color:#CBD5E1}
+.nav{position:fixed;z-index:40;right:24px;bottom:22px;display:flex;gap:8px}.nav button{width:46px;height:46px;border-radius:50%;background:#fff;color:var(--navy);box-shadow:0 10px 28px rgba(15,23,42,.16);font-size:22px}.nav button:hover{background:var(--orange);color:#fff}
+@media(max-width:900px){.stage{padding:72px 12px 12px}.slide{max-height:none;min-height:690px;border-radius:22px;padding:24px}.title-grid,.compare,.debug-grid,.takeaway{grid-template-columns:1fr}.hero-art{min-height:220px}.cols-3,.strategy{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.matrix{grid-template-columns:1fr;grid-template-rows:auto}.zone{grid-column:auto!important}.slide-body{height:auto}.topbar{padding:9px 12px}.brand{font-size:11px}.counter{display:none}.nav{right:12px;bottom:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand">CSS LAYOUT MASTERY</div><span class="counter" id="counter">1 / 6</span><button class="tool-btn wide" id="fs-btn">Fullscreen</button><button class="tool-btn" id="prev-top" aria-label="Previous slide">‹</button><button class="tool-btn" id="next-top" aria-label="Next slide">›</button></header>
+<div class="progress" id="progress"></div>
+<main class="stage"><div class="deck" id="deck">
+<!-- ============ SLIDE 1 · TITLE ============ -->
+<section class="slide active" id="slide-1" data-name="Title" aria-label="Slide 1: Title">
+  <div class="title-grid">
+    <div class="copy">
+      <span class="kicker">Modern Web Dev</span>
+      <h1 style="margin-top:16px">CSS Layout<br><span class="accent">Mastery</span></h1>
+      <p style="font-size:clamp(18px,2.2vw,30px);font-weight:700;color:var(--navy)">From Flexbox to Grid</p>
+      <div class="rule"></div>
+      <p>Six slides on how modern CSS positions content: the shift away from floats and tables, then one-dimensional Flexbox, two-dimensional Grid, responsive strategy, debugging, and a practical decision framework.</p>
+      <div class="chips"><span class="chip teal">6 Slides</span><span class="chip navy">16:9 Deck</span><span class="chip yellow">Interactive Lesson</span></div>
+    </div>
+    <div class="hero-art"><i class="shape one"></i><i class="shape two"></i><i class="shape three"></i>
+      <svg viewBox="0 0 520 420" role="img" aria-label="Geometric layout blocks forming a house">
+        <defs><linearGradient id="glow" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#2BB5B8"/><stop offset="1" stop-color="#FF7A3D"/></linearGradient></defs>
+        <path d="M118 196 262 96 406 196Z" fill="#FFE08A" stroke="#12203A" stroke-width="5" stroke-linejoin="round"/>
+        <rect x="132" y="205" width="260" height="150" rx="18" fill="#F8FAFC" stroke="#12203A" stroke-width="5"/>
+        <rect x="158" y="235" width="92" height="42" rx="10" fill="url(#glow)"/><rect x="266" y="235" width="96" height="42" rx="10" fill="#2BB5B8"/><rect x="158" y="292" width="204" height="42" rx="10" fill="#FF7A3D"/>
+        <circle cx="430" cy="112" r="34" fill="#FF7A3D" opacity=".9"/><circle cx="82" cy="315" r="45" fill="#2BB5B8" opacity=".75"/>
+      </svg>
+    </div>
+  </div><div class="page-no">01 / 06</div>
+</section>
+
+<!-- ============ SLIDE 2 · EVOLUTION ============ -->
+<section class="slide" id="slide-2" data-name="Evolution" aria-label="Slide 2: Layout evolution">
+  <div class="header"><div><span class="kicker">Context</span><h2>The layout stack moved from hacks to intent</h2></div><p>Each generation solved a narrower problem better than the last.</p></div>
+  <div class="timeline slide-body">
+    <article class="era"><h3>Tables & floats</h3><p>Structural markup was used as a positioning workaround. Content order and presentation became tangled.</p></article>
+    <article class="era"><h3>Flexbox</h3><p>A true alignment system for rows or columns, with flexible sizing and predictable distribution of space.</p></article>
+    <article class="era"><h3>Grid</h3><p>An explicit two-dimensional canvas for tracks, areas, overlap, and page-level composition.</p></article>
+    <article class="era"><h3>Intrinsic CSS</h3><p>`min()`, `clamp()`, container queries, subgrid, and `:has()` let components respond to their own context.</p></article>
+  </div><div class="page-no">02 / 06</div>
+</section>
+
+<!-- ============ SLIDE 3 · FLEXBOX ============ -->
+<section class="slide" id="slide-3" data-name="Flexbox" aria-label="Slide 3: Flexbox">
+  <div class="header"><div><span class="kicker">One dimension</span><h2>Flexbox distributes space along an axis</h2></div><p>Use it when items need to align, wrap, grow, or shrink in a row or column.</p></div>
+  <div class="cols-2 slide-body">
+    <div><pre><code><span class="token-selector">.toolbar</span> {
+  <span class="token-prop">display</span>: flex;
+  <span class="token-prop">gap</span>: <span class="token-value">12px</span>;
+  <span class="token-prop">align-items</span>: center;
+  <span class="token-prop">justify-content</span>: space-between;
+}
+<span class="token-selector">.label</span> { <span class="token-prop">flex</span>: <span class="token-value">1 1 auto</span>; }
+<span class="token-selector">.action</span> { <span class="token-prop">flex</span>: <span class="token-value">0 0 auto</span>; }</code></pre>
+      <div class="axis" style="margin-top:14px"><span>Main axis →</span><span>Cross axis ↓</span></div>
+    </div>
+    <div class="card"><h3>Mental model</h3><ul><li>`flex-grow` claims leftover space.</li><li>`flex-shrink` protects against overflow.</li><li>`flex-basis` sets the starting size.</li><li>`gap` replaces margin hacks between siblings.</li></ul><div class="demo" style="margin-top:18px"><div class="item">Label grows</div><div class="item">Button stays fixed</div></div></div>
+  </div><div class="page-no">03 / 06</div>
+</section>
+
+<!-- ============ SLIDE 4 · GRID ============ -->
+<section class="slide" id="slide-4" data-name="Grid" aria-label="Slide 4: Grid">
+  <div class="header"><div><span class="kicker">Two dimensions</span><h2>Grid composes rows, columns, and named areas</h2></div><p>Describe the container’s structure first, then place content into it.</p></div>
+  <div class="compare slide-body">
+    <div><pre><code><span class="token-selector">.app</span> {
+  <span class="token-prop">display</span>: grid;
+  <span class="token-prop">grid-template-columns</span>: <span class="token-value">240px 1fr 300px</span>;
+  <span class="token-prop">grid-template-areas</span>:
+    <span class="token-value">"nav main aside"</span>;
+  <span class="token-prop">gap</span>: <span class="token-value">20px</span>;
+}</code></pre>
+      <div class="callout" style="margin-top:16px">A track definition belongs to the parent; placement can belong to each child.</div>
+    </div>
+    <div class="matrix" aria-hidden="true"><div class="zone a">Header spans all columns</div><div class="zone b">Navigation</div><div class="zone c">Main content</div><div class="zone d">Aside</div><div class="zone e">Footer spans all columns</div></div>
+  </div><div class="page-no">04 / 06</div>
+</section>
+
+<!-- ============ SLIDE 5 · RESPONSIVE STRATEGY ============ -->
+<section class="slide" id="slide-5" data-name="Responsive" aria-label="Slide 5: Responsive strategy">
+  <div class="header"><div><span class="kicker">Strategy</span><h2>Choose layout by behavior, not screen size alone</h2></div><p>Combine fluid tracks, intrinsic limits, and component-aware breakpoints.</p></div>
+  <div class="cols-3 slide-body">
+    <article class="card"><h3>Start intrinsic</h3><p>Use `repeat(auto-fit, minmax(260px, 1fr))` before writing media queries.</p><pre style="margin-top:14px"><code><span class="token-selector">.cards</span> {
+  <span class="token-prop">display</span>: grid;
+  <span class="token-prop">grid-template-columns</span>:
+    <span class="token-value">repeat(auto-fit,
+      minmax(260px, 1fr))</span>;
+}</code></pre></article>
+    <article class="card"><h3>Add constraints</h3><p>`clamp()` prevents type and spacing from becoming too small or too large on extreme viewports.</p><div class="demo grid-demo" style="margin-top:14px"><div class="item span">Fluid headline</div><div class="item">Safe minimum</div><div class="item">Safe maximum</div></div></article>
+    <article class="card"><h3>Query the container</h3><p>Container queries make reusable components adapt wherever they are placed, rather than relying only on viewport width.</p><ul><li>Card in sidebar → compact</li><li>Same card on page → expanded</li><li>Layout remains portable</li></ul></article>
+  </div><div class="strategy"><div class="chip teal">Flex = sequence</div><div class="chip yellow">Grid = structure</div><div class="chip navy">Both = production systems</div></div><div class="page-no">05 / 06</div>
+</section>
+
+<!-- ============ SLIDE 6 · DEBUG + CLOSE ============ -->
+<section class="slide" id="slide-6" data-name="Debugging" aria-label="Slide 6: Debugging and takeaway">
+  <div class="header"><div><span class="kicker">Takeaway</span><h2>When nothing lines up, inspect the contract</h2></div><p>Most layout bugs come from conflicting assumptions between parent and child.</p></div>
+  <div class="debug-grid slide-body">
+    <div class="checklist">
+      <div class="check"><span class="tick">✓</span><div><strong>Is display applied?</strong><br><span>The parent owns `flex` or `grid`; children cannot opt in.</span></div></div>
+      <div class="check"><span class="tick">✓</span><div><strong>Are axes clear?</strong><br><span>Check `flex-direction`, wrapping, and cross-axis alignment.</span></div></div>
+      <div class="check"><span class="tick">✓</span><div><strong>What is constraining size?</strong><br><span>Review min/max values, aspect ratios, padding, and overflow.</span></div></div>
+    </div>
+    <div class="takeaway">
+      <div><div class="big-list"><div><span><strong>Pick Flexbox</strong> for navigation bars, toolbars, cards in a line, and centered stacks.</span></div><div><span><strong>Pick Grid</strong> for dashboards, editorial pages, app shells, and repeated tracks.</span></div><div><span><strong>Use both</strong>: Grid establishes regions; Flexbox arranges content inside them.</span></div></div></div>
+      <aside class="final-card"><h3>Layout mastery</h3><p>Modern CSS makes structure declarative. Name the relationship you want—grow, shrink, align, span—and let the browser calculate the rest.</p><div class="chips" style="margin-top:18px"><span class="chip yellow">Practice</span><span class="chip teal">Inspect</span><span class="chip navy">Iterate</span></div></aside>
+    </div>
+  </div><div class="page-no">06 / 06</div>
+</section>
+</div></main>
+<div class="nav"><button id="prev-bottom" aria-label="Previous slide">‹</button><button id="next-bottom" aria-label="Next slide">›</button></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const counter=document.querySelector('#counter');
+const progress=document.querySelector('#progress');
+let index=0;
+function show(next){index=Math.max(0,Math.min(slides.length-1,next));slides.forEach((s,i)=>s.classList.toggle('active',i===index));counter.textContent=`${index+1} / ${slides.length}`;progress.style.width=`${((index+1)/slides.length)*100}%`}
+function move(step){show(index+step)}
+[document.querySelector('#prev-top'),document.querySelector('#prev-bottom')].forEach(b=>b.addEventListener('click',()=>move(-1)));
+[document.querySelector('#next-top'),document.querySelector('#next-bottom')].forEach(b=>b.addEventListener('click',()=>move(1)));
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();move(1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();move(-1)}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+document.querySelector('#fs-btn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(error){console.warn('Fullscreen unavailable:',error)}});
+show(0);
+</script>
+</body>
+</html>
